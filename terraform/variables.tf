@@ -1,0 +1,14 @@
+variable "cloud_id" {
+  type        = string
+  description = "cloud_id"
+}
+
+variable "folder_id" {
+  type        = string
+  description = "folder_id"
+}
+
+variable "zone" {
+  type        = string
+  description = "zone_id"
+}
