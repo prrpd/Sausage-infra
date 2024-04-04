@@ -18,6 +18,5 @@ variable "disk_size" {
 
 variable "subnet_id" {
   type        = string
-  default     = "e9b4u35rrakkuvcbcurd"
   description = "subnet_id"
 }

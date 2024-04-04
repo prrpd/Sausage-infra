@@ -1,5 +1,5 @@
 data "template_file" "user_data" {
-  template = file("cloud-init.yaml")
+  template = file("cloud-config.yaml")
 }
 
 resource "yandex_compute_instance" "vm-1" {

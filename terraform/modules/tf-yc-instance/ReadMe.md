@@ -6,3 +6,11 @@ terraform {
       version = ">= 0.87.0"
     }
   }
+
+В качестве параметров можно передать
+cloud_id    
+folder_id   
+zone        
+platform_id 
+image_id    
+vm_name     

@@ -4,6 +4,7 @@ module "instance" {
   platform_id = var.platform_id
   image_id    = var.image_id
   vm_name     = var.vm_name
+  subnet_id   = module.network.yandex_vpc_subnet.subnet_id
 }
 
 module "network" {
