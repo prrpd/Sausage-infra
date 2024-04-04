@@ -7,3 +7,6 @@ variable "network_zones" {
   ]
   description = "network_zones"
 }
+
+variable "zone" {
+}

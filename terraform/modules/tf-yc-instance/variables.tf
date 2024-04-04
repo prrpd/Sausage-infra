@@ -1,17 +1,23 @@
 variable "platform_id" {
-  type        = string
-  default     = "standard-v2"
-  description = "platform_id"
 }
 
 variable "zone" {
-  type        = string
-  default     = "ru-central1-d"
-  description = "zone_id"
+}
+
+variable "image_id" {
+}
+
+variable "vm_name" {
 }
 
 variable "disk_size" {
   type        = number
-  default     = 50
+  default     = 30
   description = "disk_size"
+}
+
+variable "subnet_id" {
+  type        = string
+  default     = "e9b4u35rrakkuvcbcurd"
+  description = "subnet_id"
 }
