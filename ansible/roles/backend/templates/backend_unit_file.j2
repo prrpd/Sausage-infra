@@ -1,0 +1,16 @@
+[Unit]
+Description=Start backend for sausage-store
+After=network.target
+
+[Service]
+Type=simple
+User={{ service_user }}
+StandardOutput=append:/opt/log/sausage-store-backend.log
+Environment="REPORT_PATH=/var/sausage-store/reports"
+Environment="LOG_PATH=/var/sausage-store/logs"
+Restart=always
+ExecStart=/usr/bin/java -jar {{ dst_folder }}/{{ dst_file }}
+SyslogIdentifier=sausage-backend
+
+[Install]
+WantedBy=multi-user.target

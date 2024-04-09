@@ -1,0 +1,14 @@
+---
+- name: Update package cache and install install soft
+  block:
+    - name: Update package cache (apt/Ubuntu)
+      ansible.builtin.apt:
+        update_cache: yes
+      changed_when: false
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Install OpenJDK 16 JDK
+      ansible.builtin.package:
+        name: openjdk-16-jdk
+        state: present
+  become: true

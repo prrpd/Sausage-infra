@@ -1,0 +1,5 @@
+---
+- name: Start created service
+  systemd:
+    name: front.service
+    state: started

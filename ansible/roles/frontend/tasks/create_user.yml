@@ -1,0 +1,6 @@
+---
+- name: Create service user
+  user:
+    name: www-data
+    shell: /usr/sbin/nologin
+    home: /nonexistent
