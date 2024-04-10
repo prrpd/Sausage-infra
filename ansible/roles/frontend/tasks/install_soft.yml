@@ -1,8 +1,14 @@
 ---
 - name: Update package cache and install install soft
   block:
+    - name: Add Node.js repository
+      shell: curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+      args:
+        warn: false
+      when: ansible_distribution == "Ubuntu"
+    
     - name: Check last modification time of apt cache
-      stat:
+      ansible.builtin.stat:
         path: /var/cache/apt/pkgcache.bin
       register: cache_stat
       when: ansible_distribution == "Ubuntu"
@@ -15,8 +21,14 @@
         - ansible_distribution == "Ubuntu"
         - (ansible_date_time.epoch | int - cache_stat.stat.mtime) > 300
 
-    - name: Install OpenJDK 16 JDK
+    - name: Install Node.js and npm
       ansible.builtin.package:
-        name: openjdk-16-jdk
+        name: "{{ item }}"
         state: present
+      loop:
+        - nodejs
+    
+    - name: Install http-server npm package globally
+      ansible.builtin.command:
+        cmd: npm install http-server -g
   become: true

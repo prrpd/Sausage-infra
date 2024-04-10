@@ -1,0 +1,12 @@
+[Unit]
+Description=Start frontend for sausage-store
+
+[Service]
+Type=simple
+User={{ service_user }}
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+ExecStart=/usr/bin/http-server {{ dst_folder }}/dist/frontend/ -p 80 --proxy http://localhost:8080
+SyslogIdentifier=nodejs-http
+
+[Install]
+WantedBy=multi-user.target

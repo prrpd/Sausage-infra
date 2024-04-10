@@ -6,7 +6,7 @@ nexus_repo_backend_name: "std-027-58-backend"
 
 service_user: "backend"
 service_name: "back.service"
-service_log_file: /opt/log/sausage-store-backend.log
+service_log_file: "/opt/log/sausage-store-backend.log"
 
 dst_folder: "/opt/sausage-store/bin"
 dst_file: "sausage-store.jar"

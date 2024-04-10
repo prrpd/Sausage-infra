@@ -1,2 +1,12 @@
 ---
 # vars file for roles/frontend
+base_url: "https://std-027-58.praktikum-services.tech"
+file_version: "1.0.1161920"
+nexus_repo_frontend_name: "std-027-58-frontend"
+
+service_user: "www-data"
+service_name: "front.service"
+service_log_file: "/opt/log/sausage-store-backend.log"
+
+dst_folder: "/var/www-data"
+dst_file: "sausage-store.jar"

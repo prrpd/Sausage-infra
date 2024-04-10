@@ -1,0 +1,7 @@
+---
+- name: Playbook to apply a role
+  hosts: all
+  vars_files:
+    - roles/backend/vars/credentials.yml
+  roles:
+    - frontend
