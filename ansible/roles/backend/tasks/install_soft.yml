@@ -1,19 +1,12 @@
 ---
 - name: Update package cache and install install soft
   block:
-    - name: Check last modification time of apt cache
-      stat:
-        path: /var/cache/apt/pkgcache.bin
-      register: cache_stat
-      when: ansible_distribution == "Ubuntu"
-
     - name: Update package cache (apt/Ubuntu)
       ansible.builtin.apt:
         update_cache: yes
       changed_when: false
       when:
         - ansible_distribution == "Ubuntu"
-        - (ansible_date_time.epoch | int - cache_stat.stat.mtime) > 300
 
     - name: Install OpenJDK 16 JDK
       ansible.builtin.package:
