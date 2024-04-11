@@ -1,11 +1,18 @@
 ---
 - name: Update package cache and install install soft
   block:
-    - name: Add Node.js repository
-      shell: curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-      args:
-        warn: false
+    - name: Install the gpg key for nodejs LTS
+      apt_key:
+        url: "https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key"
+        state: present
       when: ansible_distribution == "Ubuntu"
+
+    - name: Add Node.js repository
+      apt_repository:
+        repo: "deb https://deb.nodesource.com/node_21.x nodistro main"
+        state: present
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"      
     
     - name: Update package cache (apt/Ubuntu)
       ansible.builtin.apt:
