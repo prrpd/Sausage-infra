@@ -22,6 +22,7 @@
         - nodejs
     
     - name: Install http-server npm package globally
-      ansible.builtin.command:
-        cmd: npm install http-server -g
+      npm:
+        name: http-server
+        global: yes
   become: true
