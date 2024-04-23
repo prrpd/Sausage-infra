@@ -1,0 +1,6 @@
+---
+# tasks file for roles/frontend
+- include_tasks: install_soft.yml
+- include_tasks: create_user.yml
+- include_tasks: download_file.yml
+- include_tasks: service_creation_and_start.yml
