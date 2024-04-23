@@ -1,0 +1,25 @@
+---
+- name: Create dst directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ dst_folder }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_user }}"
+    mode: "0755"
+
+- name: Download file
+  get_url:
+    url: "{{ base_url }}/repository/{{ nexus_repo_frontend_name }}/{{ file_version }}/sausage-store-{{ file_version }}.tar.gz"
+    dest: "/tmp/sausage-store-front.tar.gz"
+    username: "{{ username }}"
+    password: "{{ password }}"
+  register: download_result
+
+- name: Extract files from tar.gz archive
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ download_result.dest }}"
+    dest: "{{ dst_folder }}"
+    remote_src: true
+    extra_opts: "--strip-components=1"

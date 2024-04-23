@@ -1,0 +1,17 @@
+---
+- name: Create dst directory
+  become: true
+  ansible.builtin.file:
+    path: "{{ dst_folder }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_user }}"
+    mode: "0755"
+
+- name: Download file
+  become: true
+  get_url:
+    url: "{{ base_url }}/repository/{{ nexus_repo_backend_name }}/com/yandex/practicum/devops/sausage-store/{{ file_version }}/sausage-store-{{ file_version }}.jar"
+    dest: "{{ dst_folder }}/{{ dst_file }}"
+    username: "{{ username }}"
+    password: "{{ password }}"

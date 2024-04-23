@@ -1,0 +1,7 @@
+---
+- name: Create service user
+  become: true
+  user:
+    name: "{{ service_user }}"
+    shell: /usr/sbin/nologin
+    home: /nonexistent
