@@ -6,7 +6,7 @@ deploy-k8s:
   image: bitnami/kubectl:1.29.6
   environment:
     name: test/k8s
-    url: http://$STORE_URL
+    url: $STORE_URL
   before_script:
     - mkdir -p ~/.kube
     - echo $KUBECONF | base64 -d > ~/.kube/config
