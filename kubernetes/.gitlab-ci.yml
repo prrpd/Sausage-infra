@@ -12,7 +12,7 @@ deploy-k8s:
     - echo $KUBECONF
     - echo $KUBECONF | base64 -d > $KUBECONFIG
     #- ls -la
-    #- ls -la ~/.kube
+    - ls -la ~/.kube
     #- cat ~/.kube/config
     - echo $KUBECONFIG
   script:
