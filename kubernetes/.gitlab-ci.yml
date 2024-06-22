@@ -1,0 +1,17 @@
+stages:
+  - deploy
+
+deploy-k8s:
+  stage: deploy
+  image: bitnami/kubectl:1.29.6
+  environment:
+    name: test/k8s
+    url: http://$STORE_URL
+  before_script:
+    - mkdir -p ~/.kube
+    - echo -n $KUBE_CONFIG > ~/.kube/config
+  script:
+    - cd kubernetes
+    - kubectl apply -f backend -f backend-report -f frontend
+  after_script:
+    - rm ~/.kube/config
