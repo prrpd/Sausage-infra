@@ -8,15 +8,16 @@ deploy-k8s:
     name: test/k8s
     url: http://$STORE_URL
   before_script:
-    - mkdir -p ~/.kube
+    #- mkdir -p ~/.kube
     - echo $KUBECONFIG
-    - echo $KUBECONFIG | base64 -d > ~/.kube/config
-    - ls -la
-    - ls -la ~/.kube
-    - cat ~/.kube/config
+    - echo $KUBECONFIG | base64 -d > $KUBECONFIG
+    #- ls -la
+    #- ls -la ~/.kube
+    #- cat ~/.kube/config
+    - echo $KUBECONFIG
   script:
     - pwd
     - cd kubernetes
     - kubectl apply -f backend -f backend-report -f frontend
-  after_script:
-    - rm ~/.kube/config
+  # after_script:
+  #   - rm ~/.kube/config
