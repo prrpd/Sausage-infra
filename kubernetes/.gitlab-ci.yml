@@ -9,8 +9,8 @@ deploy-k8s:
     url: http://$STORE_URL
   before_script:
     #- mkdir -p ~/.kube
-    - echo $KUBECONFIG
-    - echo $KUBECONFIG | base64 -d > $KUBECONFIG
+    - echo $KUBECONF
+    - echo $KUBECONF | base64 -d > $KUBECONFIG
     #- ls -la
     #- ls -la ~/.kube
     #- cat ~/.kube/config
