@@ -10,7 +10,9 @@ deploy-k8s:
   before_script:
     - mkdir -p ~/.kube
     - echo -n $KUBE_CONFIG > ~/.kube/config
+    - cat ~/.kube/config
   script:
+    - pwd
     - cd kubernetes
     - kubectl apply -f backend -f backend-report -f frontend
   after_script:
