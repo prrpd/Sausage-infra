@@ -3,13 +3,14 @@ stages:
 
 deploy-k8s:
   stage: deploy
-  image: bitnami/kubectl:1.29.6
+  image: alpine/k8s:1.27.13
   environment:
     name: test/k8s
     url: $STORE_URL
   before_script:
     - mkdir -p ~/.kube
     - echo $KUBECONF | base64 -d > ~/.kube/config
+    - envsubst < ./backend/secrets.yaml > secrets.tmp && mv secrets.tmp secrets.yaml
   script:
     - cd kubernetes
     - kubectl apply -f backend -f backend-report -f frontend
