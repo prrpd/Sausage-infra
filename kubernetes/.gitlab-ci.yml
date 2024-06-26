@@ -10,6 +10,8 @@ deploy-k8s:
   before_script:
     - mkdir -p ~/.kube
     - echo $KUBECONF | base64 -d > ~/.kube/config
+    - ls
+    - pwd
     - envsubst < ./backend/secrets.yaml > secrets.tmp && mv secrets.tmp secrets.yaml
   script:
     - cd kubernetes

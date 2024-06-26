@@ -1,7 +1,7 @@
 stages:
   - module-pipelines
 
-frontend:
+k8s:
   stage: module-pipelines
   trigger:
     include:
