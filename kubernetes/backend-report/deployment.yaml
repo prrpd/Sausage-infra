@@ -1,0 +1,50 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-report
+  labels:
+    app: backend-report
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: backend-report
+  template:
+    metadata:
+      labels:
+        app: backend-report
+    spec:
+      containers:
+        - name: backend-report
+          image: gitlab.praktikum-services.ru:5050/std-027-58/sausage-store/sausage-backend-report:1.0.1330499
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dbs
+                  key: MONGO_USER
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dbs
+                  key: MONGO_PASSWORD
+            - name: MONGO_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: dbs
+                  key: MONGO_HOST
+            - name: MONGO_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: dbs
+                  key: MONGO_DATABASE
+            - name: PORT
+              value: "8080"
+            - name: DB
+              value: "mongodb://$(MONGO_USER):$(MONGO_PASSWORD)@$(MONGO_HOST):27018/$(MONGO_DATABASE)?tls=true"
+      imagePullSecrets:
+        - name: docker-config-secret
