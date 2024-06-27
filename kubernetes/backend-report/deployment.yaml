@@ -29,22 +29,22 @@ spec:
             - name: MONGO_USER
               valueFrom:
                 secretKeyRef:
-                  name: dbs
+                  name: mongo
                   key: MONGO_USER
             - name: MONGO_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: dbs
+                  name: mongo
                   key: MONGO_PASSWORD
             - name: MONGO_HOST
               valueFrom:
                 secretKeyRef:
-                  name: dbs
+                  name: mongo
                   key: MONGO_HOST
             - name: MONGO_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: dbs
+                  name: mongo
                   key: MONGO_DATABASE
             - name: PORT
               value: "8080"
