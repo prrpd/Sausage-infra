@@ -12,6 +12,7 @@ deploy-k8s:
     - echo $KUBECONF | base64 -d > ~/.kube/config
     - cd kubernetes
     - envsubst < ./backend/secrets.yaml > ./backend/secrets.tmp && mv ./backend/secrets.tmp ./backend/secrets.yaml
+    - envsubst < ./backend-report/secrets.yaml > ./backend-report/secrets.tmp && mv ./backend-report/secrets.tmp ./backend-report/secrets.yaml
   script:
     - kubectl apply -f backend -f backend-report -f frontend
   after_script:
