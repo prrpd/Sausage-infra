@@ -28,11 +28,11 @@ deploy-helm:
     - helm repo add nexus $NEXUS_REPO_URL --username ${NEXUS_REPO_USER} --password $NEXUS_REPO_PASS
     - helm repo update
     - helm repo list
-    - >
-      helm upgrade --install sausage-store \
-      --set environment=test \
-      --set fqdn="std-027-58.k8s.praktikum-services.tech" \
-      --atomic --timeout 15m \
-      nexus/sausage-store-chart
+    - helm search repo nexus
+    - helm upgrade --install sausage-store
+      --set environment=test
+      --set fqdn="std-027-58.k8s.praktikum-services.tech"
+      --atomic --timeout 15m
+      nexus/sausage-store
   after_script:
     - rm ~/.kube/config
