@@ -24,15 +24,14 @@ deploy-helm:
     - helm version
     # - envsubst < ./backend/secrets.yaml > ./backend/secrets.tmp && mv ./backend/secrets.tmp ./backend/secrets.yaml
     # - envsubst < ./backend-report/secrets.yaml > ./backend-report/secrets.tmp && mv ./backend-report/secrets.tmp ./backend-report/secrets.yaml
-  script: — |
-    <...> Kubeconfig create automation <...>
-    helm repo add nexus $NEXUS_HELM_REPO
-    helm repo update
-    helm repo list
-    helm upgrade --install sausage-store \
-    --set environment=test \
-    --set fqdn="std-027-58.k8s.praktikum-services.tech" \
-    --atomic --timeout 15m \
-    nexus/sausage-store
+  script:
+    - helm repo add nexus $NEXUS_HELM_REPO
+    - helm repo update
+    - helm repo list
+    - helm upgrade --install sausage-store \
+      --set environment=test \
+      --set fqdn="std-027-58.k8s.praktikum-services.tech" \
+      --atomic --timeout 15m \
+      nexus/sausage-store
   after_script:
     - rm ~/.kube/config
