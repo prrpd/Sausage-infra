@@ -21,8 +21,7 @@ deploy-helm:
   before_script:
     - mkdir -p ~/.kube
     - echo $KUBECONF | base64 -d > ~/.kube/config
-    - helm version
-    - pwd
+    - cd sausage-store-chart
     - cat values.yaml
     - envsubst < values.yaml > values.tmp && mv values.tmp values.yaml
     - cat values.yaml
