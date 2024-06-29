@@ -22,6 +22,7 @@ deploy-helm:
     - mkdir -p ~/.kube
     - echo $KUBECONF | base64 -d > ~/.kube/config
     - helm version
+    - pwd
     - cat values.yaml
     - envsubst < values.yaml > values.tmp && mv values.tmp values.yaml
     - cat values.yaml
