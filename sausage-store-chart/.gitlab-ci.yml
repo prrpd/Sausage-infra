@@ -8,14 +8,9 @@ variables:
 upload-helm:
   stage: release
   image: alpine/k8s:1.27.13
-  before_script:
-    - mkdir -p ~/.kube
-    - echo $KUBECONF | base64 -d > ~/.kube/config
   script:
     - helm package --version $VERSION sausage-store-chart/
     - curl -v -u "${NEXUS_REPO_USER}:${NEXUS_REPO_PASS}" --upload-file sausage-store-${VERSION}.tgz ${NEXUS_REPO_URL}/sausage-store-${VERSION}.tgz
-  after_script:
-    - rm $HOME/.kube/config
 
 deploy-helm:
   stage: deploy
