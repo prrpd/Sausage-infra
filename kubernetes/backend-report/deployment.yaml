@@ -6,6 +6,7 @@ metadata:
   labels:
     app: backend-report
 spec:
+  revisionHistoryLimit: 12
   replicas: 1
   strategy:
     type: Recreate
@@ -21,26 +22,29 @@ spec:
         - name: backend-report
           image: gitlab.praktikum-services.ru:5050/std-027-58/sausage-store/sausage-backend-report:1.0.1330499
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 1
           env:
             - name: MONGO_USER
               valueFrom:
                 secretKeyRef:
-                  name: dbs
+                  name: mongo
                   key: MONGO_USER
             - name: MONGO_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: dbs
+                  name: mongo
                   key: MONGO_PASSWORD
             - name: MONGO_HOST
               valueFrom:
                 secretKeyRef:
-                  name: dbs
+                  name: mongo
                   key: MONGO_HOST
             - name: MONGO_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: dbs
+                  name: mongo
                   key: MONGO_DATABASE
             - name: PORT
               value: "8080"
@@ -48,3 +52,15 @@ spec:
               value: "mongodb://$(MONGO_USER):$(MONGO_PASSWORD)@$(MONGO_HOST):27018/$(MONGO_DATABASE)?tls=true"
       imagePullSecrets:
         - name: docker-config-secret
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - backend-report
+                topologyKey: "kubernetes.io/hostname"

@@ -6,11 +6,13 @@ metadata:
   labels:
     app: backend
 spec:
+  revisionHistoryLimit: 12
   replicas: 1
-  # Стратегия развёртывания. Recreate — удалит сначала все старые Pod'ы
-  # Есть и более гибкая стратегии, например, RollingUpdate, которая будет обновлять Pod'ы порциями
   strategy:
-    type: Recreate
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 20%
   selector:
     matchLabels:
       app: backend
@@ -23,6 +25,9 @@ spec:
         - name: backend
           image: gitlab.praktikum-services.ru:5050/std-027-58/sausage-store/sausage-backend:1.0.1330498
           imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 1
           env:
             - name: SPRING_DATASOURCE_URL
               value: "jdbc:postgresql://rc1a-po1jnu39i5wfa4bw.mdb.yandexcloud.net:6432/std-027-58?ssl=true"
