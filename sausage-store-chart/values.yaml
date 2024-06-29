@@ -54,3 +54,12 @@ frontend:
       requests:
         cpu: 1
   fqdn: std-027-58.k8s.praktikum-services.tech
+
+secrets:
+  kube_docker_registry: ${KUBE_DOCKER_REGISTRY}
+  springDatasourceUsername: ${KUBE_SPRING_DATASOURCE_USERNAME}
+  springDatasourcePassword: ${KUBE_SPRING_DATASOURCE_PASSWORD}
+  mongoUser: ${KUBE_MONGO_USER}
+  mongoPassword: ${KUBE_MONGO_PASSWORD}
+  mongoHost: ${KUBE_MONGO_HOST}
+  mongoDatabase: ${KUBE_MONGO_DATABASE}

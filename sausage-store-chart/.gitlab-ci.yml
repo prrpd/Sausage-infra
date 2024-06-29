@@ -25,12 +25,18 @@ deploy-helm:
     # - envsubst < ./backend/secrets.yaml > ./backend/secrets.tmp && mv ./backend/secrets.tmp ./backend/secrets.yaml
     # - envsubst < ./backend-report/secrets.yaml > ./backend-report/secrets.tmp && mv ./backend-report/secrets.tmp ./backend-report/secrets.yaml
   script:
-    - helm repo add nexus $NEXUS_REPO_URL --username ${NEXUS_REPO_USER} --password $NEXUS_REPO_PASS
+    - helm repo add nexus $NEXUS_REPO_URL --username $NEXUS_REPO_USER --password $NEXUS_REPO_PASS
     - helm repo update
     - helm repo list
     - helm search repo nexus
     - helm upgrade --install sausage-store
-      --set environment=test
+      --set secrets.springDatasourceUsername=${KUBE_SPRING_DATASOURCE_USERNAME}
+      --set secrets.springDatasourcePassword=${KUBE_SPRING_DATASOURCE_PASSWORD}
+      --set secrets.mongoUser=${KUBE_MONGO_USER}
+      --set secrets.mongoPassword=${KUBE_MONGO_PASSWORD}
+      --set secrets.mongoHost=${KUBE_MONGO_HOST}
+      --set secrets.mongoDatabase=${KUBE_MONGO_DATABASE}
+      --set secrets.kubeDockerRegistry=${KUBE_DOCKER_REGISTRY}
       --set fqdn="std-027-58.k8s.praktikum-services.tech"
       --atomic --timeout 15m
       nexus/sausage-store
