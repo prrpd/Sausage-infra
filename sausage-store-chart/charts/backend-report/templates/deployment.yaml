@@ -1,0 +1,73 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Chart.Name }}-deploy
+  labels:
+    app: {{.Values.name}}
+    app.kubernetes.io/name: sausage-{{.Values.name}}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/component: "{{ .Chart.Name }}"
+    app.kubernetes.io/part-of: sausage-store
+    env: "{{ .Values.environment }}"
+spec:
+  revisionHistoryLimit: {{.Values.revisionHistoryLimit}}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{.Values.name}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.name}}
+    spec:
+      containers:
+        - name: {{ .Values.containers.image.name }}
+          image: "{{ .Values.global.imageRegistry }}{{ .Values.containers.image.name }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: {{.Values.containers.resources.requests.cpu}}
+          env:
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mongo
+                  key: MONGO_USER
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo
+                  key: MONGO_PASSWORD
+            - name: MONGO_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: mongo
+                  key: MONGO_HOST
+            - name: MONGO_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: mongo
+                  key: MONGO_DATABASE
+            - name: PORT
+              value: "8080"
+            - name: DB
+              value: "mongodb://$(MONGO_USER):$(MONGO_PASSWORD)@$(MONGO_HOST):27018/$(MONGO_DATABASE)?tls=true"
+      imagePullSecrets:
+        - name: docker-config-secret
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - {{.Values.name}}
+                topologyKey: "kubernetes.io/hostname"

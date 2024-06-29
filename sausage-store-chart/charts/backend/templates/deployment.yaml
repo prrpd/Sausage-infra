@@ -1,0 +1,87 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Chart.Name }}-deploy
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{.Values.name}}
+    app.kubernetes.io/name: sausage-{{.Values.name}}
+    app.kubernetes.io/instance: "{{ .Release.Name }}"
+    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
+    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
+    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app.kubernetes.io/component: "{{ .Chart.Name }}"
+    app.kubernetes.io/part-of: sausage-store
+    env: "{{ .Values.environment }}" 
+spec:
+  revisionHistoryLimit: {{.Values.revisionHistoryLimit}}
+  replicas: {{.Values.replicas}}
+  strategy:
+    type: {{ .Values.strategy.type }}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge }}
+  selector:
+    matchLabels:
+      app: {{.Values.name}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.name}}
+    spec:
+      containers:
+        - name: {{ .Values.containers.image.name }}
+          image: "{{ .Values.global.imageRegistry }}{{ .Values.containers.image.name }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: {{ .Values.containers.resources.requests.cpu }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "{{ .Values.global.springDatasourceUrl }}"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: dbs
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dbs
+                  key: "SPRING_DATASOURCE_PASSWORD"
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dbs
+                  key: MONGO_USER
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dbs
+                  key: "MONGO_PASSWORD"
+            - name: MONGO_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: dbs
+                  key: MONGO_HOST
+            - name: MONGO_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: dbs
+                  key: MONGO_DATABASE
+            - name: SPRING_DATA_MONGODB_URI
+              value: "mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}:27018/${MONGO_DATABASE}?tls=true"
+          ports:
+            - name: backend
+              containerPort: {{ .Values.containers.ports.containerPort }}
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 1
+            failureThreshold: 6
+      imagePullSecrets:
+        - name: docker-config-secret
