@@ -22,16 +22,10 @@ deploy-helm:
     - mkdir -p ~/.kube
     - echo $KUBECONF | base64 -d > ~/.kube/config
     - cd sausage-store-chart
-    - cat values.yaml
     - envsubst < values.yaml > values.tmp && mv values.tmp values.yaml
-    - cat values.yaml
-    # - envsubst < ./backend-report/secrets.yaml > ./backend-report/secrets.tmp && mv ./backend-report/secrets.tmp ./backend-report/secrets.yaml
   script:
     - helm repo add nexus $NEXUS_REPO_URL --username $NEXUS_REPO_USER --password $NEXUS_REPO_PASS
     - helm repo update
-    - helm repo list
-    - helm search repo nexus
-    - echo ${KUBE_DOCKER_REGISTRY}
     - helm upgrade --install sausage-store
       --set secrets.springDatasourceUsername=${KUBE_SPRING_DATASOURCE_USERNAME}
       --set secrets.springDatasourcePassword=${KUBE_SPRING_DATASOURCE_PASSWORD}
