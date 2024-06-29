@@ -25,7 +25,7 @@ deploy-helm:
     # - envsubst < ./backend/secrets.yaml > ./backend/secrets.tmp && mv ./backend/secrets.tmp ./backend/secrets.yaml
     # - envsubst < ./backend-report/secrets.yaml > ./backend-report/secrets.tmp && mv ./backend-report/secrets.tmp ./backend-report/secrets.yaml
   script:
-    - helm repo add nexus $NEXUS_HELM_REPO --username ${NEXUS_REPO_USER} --password $NEXUS_REPO_PASS
+    - helm repo add nexus $NEXUS_REPO_URL --username ${NEXUS_REPO_USER} --password $NEXUS_REPO_PASS
     - helm repo update
     - helm repo list
     - helm upgrade --install sausage-store \
