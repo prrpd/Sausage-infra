@@ -28,7 +28,7 @@ deploy-helm:
     - helm repo add nexus $NEXUS_REPO_URL --username $NEXUS_REPO_USER --password $NEXUS_REPO_PASS
     - helm repo update
     - >-
-      helm upgrade --install sausage-store3
+      helm upgrade --install sausage-store
       --set environment=test
       --set frontend.fqdn="std-027-58.k8s.praktikum-services.tech"
       --set global.secrets.springDatasourceUsername=${KUBE_SPRING_DATASOURCE_USERNAME1}
