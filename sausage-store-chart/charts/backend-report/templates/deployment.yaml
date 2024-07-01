@@ -36,29 +36,29 @@ spec:
             - name: MONGO_USER
               valueFrom:
                 secretKeyRef:
-                  name: mongo
+                  name: {{ .Release.Name }}-dbs
                   key: MONGO_USER
             - name: MONGO_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mongo
+                  name: {{ .Release.Name }}-dbs
                   key: MONGO_PASSWORD
             - name: MONGO_HOST
               valueFrom:
                 secretKeyRef:
-                  name: mongo
+                  name: {{ .Release.Name }}-dbs
                   key: MONGO_HOST
             - name: MONGO_DATABASE
               valueFrom:
                 secretKeyRef:
-                  name: mongo
+                  name: {{ .Release.Name }}-dbs
                   key: MONGO_DATABASE
             - name: PORT
               value: "8080"
             - name: DB
               value: "mongodb://$(MONGO_USER):$(MONGO_PASSWORD)@$(MONGO_HOST):27018/$(MONGO_DATABASE)?tls=true"
       imagePullSecrets:
-        - name: docker-config-secret
+        - name: {{ .Release.Name }}-docker-config-secret
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
