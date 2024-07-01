@@ -4,12 +4,12 @@ global:
   imageRegistry: gitlab.praktikum-services.ru:5050/std-027-58/sausage-store/
   secrets:
     kubeDockerRegistry: ${KUBE_DOCKER_REGISTRY}
-    springDatasourceUsername: "${KUBE_SPRING_DATASOURCE_USERNAME}"
-    springDatasourcePassword: "${KUBE_SPRING_DATASOURCE_PASSWORD}"
-    mongoUser: "${KUBE_MONGO_USER}"
-    mongoPassword: "${KUBE_MONGO_PASSWORD}"
-    mongoHost: "${KUBE_MONGO_HOST}"
-    mongoDatabase: "${KUBE_MONGO_DATABASE}"
+    springDatasourceUsername: ${KUBE_SPRING_DATASOURCE_USERNAME1}
+    springDatasourcePassword: ${KUBE_SPRING_DATASOURCE_PASSWORD1}
+    mongoUser: ${KUBE_MONGO_USER1}
+    mongoPassword: ${KUBE_MONGO_PASSWORD1}
+    mongoHost: ${KUBE_MONGO_HOST1}
+    mongoDatabase: ${KUBE_MONGO_DATABASE1}
 
 backend:
   name: backend
