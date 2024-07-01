@@ -2,6 +2,14 @@ global:
   springDatasourceUrl: jdbc:postgresql://rc1a-po1jnu39i5wfa4bw.mdb.yandexcloud.net:6432/std-027-58?ssl=true
   appName: sausage-store
   imageRegistry: gitlab.praktikum-services.ru:5050/std-027-58/sausage-store/
+  secrets:
+    kubeDockerRegistry: $(KUBE_DOCKER_REGISTRY)
+    springDatasourceUsername: ${KUBE_SPRING_DATASOURCE_USERNAME}
+    springDatasourcePassword: ${KUBE_SPRING_DATASOURCE_PASSWORD}
+    mongoUser: ${KUBE_MONGO_USER}
+    mongoPassword: ${KUBE_MONGO_PASSWORD}
+    mongoHost: ${KUBE_MONGO_HOST}
+    mongoDatabase: ${KUBE_MONGO_DATABASE}
 
 backend:
   name: backend
@@ -54,12 +62,3 @@ frontend:
       requests:
         cpu: 1
   fqdn: std-027-58.k8s.praktikum-services.tech
-
-secrets:
-  kube_docker_registry: ${KUBE_DOCKER_REGISTRY}
-  springDatasourceUsername: ${KUBE_SPRING_DATASOURCE_USERNAME}
-  springDatasourcePassword: ${KUBE_SPRING_DATASOURCE_PASSWORD}
-  mongoUser: ${KUBE_MONGO_USER}
-  mongoPassword: ${KUBE_MONGO_PASSWORD}
-  mongoHost: ${KUBE_MONGO_HOST}
-  mongoDatabase: ${KUBE_MONGO_DATABASE}
