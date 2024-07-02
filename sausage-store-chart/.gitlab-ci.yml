@@ -37,7 +37,7 @@ deploy-helm:
       --set global.secrets.mongoHost=${KUBE_MONGO_HOST1}
       --set global.secrets.mongoDatabase=${KUBE_MONGO_DATABASE1}
       --set global.secrets.kubeDockerRegistry=${KUBE_DOCKER_REGISTRY}
-      --atomic --timeout 5m
+      --atomic --timeout 2m
       nexus/sausage-store
   after_script:
     - rm ~/.kube/config
