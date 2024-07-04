@@ -1,0 +1,64 @@
+global:
+  springDatasourceUrl: jdbc:postgresql://rc1a-po1jnu39i5wfa4bw.mdb.yandexcloud.net:6432/std-027-58?ssl=true
+  appName: sausage-store
+  imageRegistry: gitlab.praktikum-services.ru:5050/std-027-58/sausage-store/
+  secrets:
+    kubeDockerRegistry: ${KUBE_DOCKER_REGISTRY}
+    springDatasourceUsername: ${KUBE_SPRING_DATASOURCE_USERNAME1}
+    springDatasourcePassword: ${KUBE_SPRING_DATASOURCE_PASSWORD1}
+    mongoUser: ${KUBE_MONGO_USER1}
+    mongoPassword: ${KUBE_MONGO_PASSWORD1}
+    mongoHost: ${KUBE_MONGO_HOST1}
+    mongoDatabase: ${KUBE_MONGO_DATABASE1}
+
+backend:
+  name: backend
+  revisionHistoryLimit: 12
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 20%
+  containers:
+    image:
+      name: sausage-backend
+      tag: 1.0.1330498
+    resources:
+      requests:
+        cpu: 1
+    ports:
+      containerPort: 8080
+  vpa:
+    resources:
+      minAllowed:
+        cpu: 1m
+        memory: 60Mi
+      maxAllowed:
+        cpu: 1
+        memory: 500Mi
+
+backend-report:
+  name: backend-report
+  revisionHistoryLimit: 12
+  replicas: 1
+  containers:
+    image:
+      name: sausage-backend-report
+      tag: 1.0.1330499
+    resources:
+      requests:
+        cpu: 1
+
+frontend:
+  name: frontend
+  revisionHistoryLimit: 12
+  replicas: 1
+  containers:
+    image:
+      name: sausage-frontend
+      tag: 1.0.1337950
+    resources:
+      requests:
+        cpu: 1
+  fqdn: std-027-58.k8s.praktikum-services.tech

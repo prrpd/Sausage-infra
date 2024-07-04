@@ -1,0 +1,75 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-{{ .Chart.Name }}-deploy
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "sausage-store.labels" . | nindent 4 }}
+spec:
+  revisionHistoryLimit: {{.Values.revisionHistoryLimit}}
+  replicas: {{.Values.replicas}}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 4 }}
+  selector:
+    matchLabels:
+      app: {{.Values.name}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.name}}
+    spec:
+      containers:
+        - name: {{ .Values.containers.image.name }}
+          image: "{{ .Values.global.imageRegistry }}{{ .Values.containers.image.name }}:{{ .Chart.AppVersion }}"
+          imagePullPolicy: IfNotPresent
+          resources:
+            {{- toYaml .Values.containers.resources | nindent 12 }}
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "{{ .Values.global.springDatasourceUrl }}"
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-dbs
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-dbs
+                  key: "SPRING_DATASOURCE_PASSWORD"
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-dbs
+                  key: MONGO_USER
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-dbs
+                  key: "MONGO_PASSWORD"
+            - name: MONGO_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-dbs
+                  key: MONGO_HOST
+            - name: MONGO_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-dbs
+                  key: MONGO_DATABASE
+            - name: SPRING_DATA_MONGODB_URI
+              value: "mongodb://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_HOST}:27018/${MONGO_DATABASE}?tls=true"
+          ports:
+            - name: backend
+              containerPort: {{ .Values.containers.ports.containerPort }}
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 1
+            failureThreshold: 6
+      imagePullSecrets:
+        - name: {{ .Release.Name }}-docker-config-secret
