@@ -4,15 +4,7 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-{{ .Chart.Name }}-deploy
   labels:
-    app: {{.Values.name}}
-    app.kubernetes.io/name: sausage-{{.Values.name}}
-    app.kubernetes.io/instance: "{{ .Release.Name }}"
-    app.kubernetes.io/version: "{{ .Chart.AppVersion }}"
-    app.kubernetes.io/managed-by: "{{ .Release.Service }}"
-    helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app.kubernetes.io/component: "{{ .Chart.Name }}"
-    app.kubernetes.io/part-of: sausage-store
-    env: "{{ .Values.environment }}"
+    {{- include "sausage-store.labels" . | nindent 4 }}
 spec:
   revisionHistoryLimit: {{.Values.revisionHistoryLimit}}
   replicas: {{.Values.replicas}}

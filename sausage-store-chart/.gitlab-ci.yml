@@ -21,9 +21,6 @@ deploy-helm:
   before_script:
     - mkdir -p ~/.kube
     - echo $KUBECONF | base64 -d > ~/.kube/config
-    # - cd sausage-store-chart
-    # - envsubst < values.yaml > values.tmp && mv values.tmp values.yaml
-    # - cat values.yaml
   script:
     - helm repo add nexus $NEXUS_REPO_URL --username $NEXUS_REPO_USER --password $NEXUS_REPO_PASS
     - helm repo update
