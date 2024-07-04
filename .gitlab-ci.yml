@@ -1,22 +1,66 @@
 stages:
-  - module-pipelines
+  - release
+  - deploy
 
-k8s:
-  stage: module-pipelines
-  trigger:
-    include:
-      - "/kubernetes/.gitlab-ci.yml"
-    strategy: depend
-  only:
-    changes:
-      - kubernetes/**/*
+variables:
+  VERSION: 1.0.${CI_PIPELINE_ID}
 
-helm:
-  stage: module-pipelines
-  trigger:
-    include:
-      - "/sausage-store-chart/.gitlab-ci.yml"
-    strategy: depend
+upload-helm:
+  stage: release
+  image: alpine/k8s:1.27.13
+  script:
+    - helm package --version $VERSION sausage-store-chart/
+    - curl -v -u "${NEXUS_REPO_USER}:${NEXUS_REPO_PASS}" --upload-file sausage-store-${VERSION}.tgz ${NEXUS_REPO_URL}/sausage-store-${VERSION}.tgz
   only:
     changes:
       - sausage-store-chart/**/*
+
+deploy-helm:
+  stage: deploy
+  image: alpine/k8s:1.27.13
+  environment:
+    name: test/helm
+    url: $STORE_URL
+  before_script:
+    - mkdir -p ~/.kube
+    - echo $KUBECONF | base64 -d > ~/.kube/config
+  script:
+    - helm repo add nexus $NEXUS_REPO_URL --username $NEXUS_REPO_USER --password $NEXUS_REPO_PASS
+    - helm repo update
+    - >-
+      helm upgrade --install sausage-store
+      --set frontend.fqdn="std-027-58.k8s.praktikum-services.tech"
+      --set global.secrets.springDatasourceUsername=${KUBE_SPRING_DATASOURCE_USERNAME1}
+      --set global.secrets.springDatasourcePassword=${KUBE_SPRING_DATASOURCE_PASSWORD1}
+      --set global.secrets.mongoUser=${KUBE_MONGO_USER1}
+      --set global.secrets.mongoPassword=${KUBE_MONGO_PASSWORD1}
+      --set global.secrets.mongoHost=${KUBE_MONGO_HOST1}
+      --set global.secrets.mongoDatabase=${KUBE_MONGO_DATABASE1}
+      --set global.secrets.kubeDockerRegistry=${KUBE_DOCKER_REGISTRY}
+      --atomic --timeout 2m
+      nexus/sausage-store
+  after_script:
+    - rm ~/.kube/config
+  only:
+    changes:
+      - sausage-store-chart/**/*
+
+deploy-k8s:
+  stage: deploy
+  image: alpine/k8s:1.27.13
+  environment:
+    name: test/k8s
+    url: $STORE_URL
+  before_script:
+    - mkdir -p ~/.kube
+    - echo $KUBECONF | base64 -d > ~/.kube/config
+    - cd kubernetes
+    - envsubst < ./backend/secrets.yaml > ./backend/secrets.tmp && mv ./backend/secrets.tmp ./backend/secrets.yaml
+    - envsubst < ./backend-report/secrets.yaml > ./backend-report/secrets.tmp && mv ./backend-report/secrets.tmp ./backend-report/secrets.yaml
+  script:
+    - kubectl apply -f backend -f backend-report -f frontend
+  after_script:
+    - rm ~/.kube/config
+  only:
+    changes:
+      - kubernetes/**/*
